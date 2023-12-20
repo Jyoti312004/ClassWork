@@ -1,60 +1,58 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <string.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include<stdbool.h>
+#include<limits.h>
+#include<string.h> 
 
-typedef struct {
-    int rear;
-    int arr[100];
-} MyQueue;
-MyQueue q;
+int postfix(char* s) {
+    int top = -1;
+    int stack[100];
+    int len = strlen(s);
+    int i = 0;
+    while (s[i] != '?') {
+        if (s[i] == ' ') {
+            i++;
+            continue;
+        }
+        if (s[i] >= '0' && s[i] <= '9') {
+            top = top + 1;
+            int val = 0;
+            while (s[i] != ' ') {
+                val = val * 10 + (s[i] - '0');
+                i++;
+            }
+            stack[top] = val;
+            i++;
+        } else {
+            int val2 = stack[top];
+            top--;
+            int val1 = stack[top];
+            top--;
 
-
-MyQueue* myQueueCreate() {
-    q.rear = -1;
-    return &q;
-}
-
-void myQueuePush(MyQueue* obj, int x) {
-    obj->rear = obj->rear + 1;
-    obj->arr[obj->rear] = x;
-    
-}
-
-int myQueuePop(MyQueue* obj) {
-    int val = obj->arr[0];
-    for(int i=1;i<=obj->rear;i++){
-        obj->arr[i-1] = obj->arr[i];
+            switch (s[i]) {
+                case '+':
+                    stack[++top] = val1 + val2;
+                    break;
+                case '-':
+                    stack[++top] = val1 - val2;
+                    break;
+                case '*':
+                    stack[++top] = val1 * val2;
+                    break;
+                case '/':
+                    stack[++top] = val1 / val2;  
+                    break;
+            }
+            i++;
+        }
     }
 
-    obj->rear= obj->rear - 1;
-    return val;
-    
+    return stack[0];
 }
 
-int myQueuePeek(MyQueue* obj) {
-    return obj->arr[0];
+int main() {
+    char* s = " 12 23 + ?";
+    int ans = postfix(s);
+    printf("%d\n", ans);
+    return 0;
 }
-
-bool myQueueEmpty(MyQueue* obj) {
-    return obj->rear==-1?true:false;
-}
-
-void myQueueFree(MyQueue* obj) {
-    obj->rear = -1;
-    
-}
-
-/**
- * Your MyQueue struct will be instantiated and called as such:
- * MyQueue* obj = myQueueCreate();
- * myQueuePush(obj, x);
- 
- * int param_2 = myQueuePop(obj);
- 
- * int param_3 = myQueuePeek(obj);
- 
- * bool param_4 = myQueueEmpty(obj);
- 
- * myQueueFree(obj);
-*/
