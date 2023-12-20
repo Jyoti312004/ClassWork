@@ -1,3 +1,8 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
+
 char* removeDuplicateLetters(char* s) {
     char stack[strlen(s)];
     bool visited[26];
